@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35825.156
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TigerCode", "TigerCode\TigerCode.csproj", "{55489EAA-7C51-4675-9349-908942E695C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lexer", "Lexer\Lexer.csproj", "{89F98C4B-C266-40FA-A5F8-45C60AEEB76B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{55489EAA-7C51-4675-9349-908942E695C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55489EAA-7C51-4675-9349-908942E695C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55489EAA-7C51-4675-9349-908942E695C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55489EAA-7C51-4675-9349-908942E695C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89F98C4B-C266-40FA-A5F8-45C60AEEB76B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89F98C4B-C266-40FA-A5F8-45C60AEEB76B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89F98C4B-C266-40FA-A5F8-45C60AEEB76B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89F98C4B-C266-40FA-A5F8-45C60AEEB76B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {06CA6807-4D52-4C53-BCE5-E31EC5E5FABE}
+	EndGlobalSection
+EndGlobal
