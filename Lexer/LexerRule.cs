@@ -1,15 +1,12 @@
 ﻿
-using System.Buffers;
-using System.Collections;
-
 namespace Lexer;
 
-public abstract class Rule<TToken>
+public abstract class LexerRule<TToken>
 {
     public abstract bool Match(ReadOnlySpan<char> text, out int length, out TToken token);
 }
 
-public class SkipRule<TToken> : Rule<TToken>
+public class SkipRule<TToken> : LexerRule<TToken>
 {
     protected ReadOnlyMemory<string> ValuesToSkip { get; set; }
 

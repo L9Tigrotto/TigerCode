@@ -1,21 +1,21 @@
 ﻿
 namespace Lexer;
 
-public class Lexer<TToken>(ReadOnlyMemory<char> input, Rule<TToken> skip, List<Rule<TToken>> rules)
+public class Lexer<TToken>(ReadOnlyMemory<char> input, LexerRule<TToken> skip, List<LexerRule<TToken>> rules)
 {
-    private Rule<TToken> Skip { get; init; } = skip;
-    private List<Rule<TToken>> Rules { get; init; } = rules;
+    private LexerRule<TToken> Skip { get; init; } = skip;
+    private List<LexerRule<TToken>> Rules { get; init; } = rules;
 
     protected ReadOnlyMemory<char> Input { get; set; } = input;
     protected int Cursor { get; set; } = 0;
 
-    public static Lexer<TToken> From(FileInfo fileInfo, Rule<TToken> skip, List<Rule<TToken>> rules)
+    public static Lexer<TToken> From(FileInfo fileInfo, LexerRule<TToken> skip, List<LexerRule<TToken>> rules)
     {
         string content = File.ReadAllText(fileInfo.FullName);
         return new(content.AsMemory(), skip, rules);
     }
 
-    public void AddRule(Rule<TToken> rule) { Rules.Add(rule); }
+    public void AddRule(LexerRule<TToken> lexerRule) { Rules.Add(lexerRule); }
 
     public TToken NextToken()
     {
