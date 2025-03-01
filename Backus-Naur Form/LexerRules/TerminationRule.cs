@@ -1,5 +1,5 @@
 ﻿
-using Lexer;
+using Lexer.DefaultRules;
 
 namespace Backus_Naur_Form.LexerRules;
 
@@ -7,17 +7,17 @@ namespace Backus_Naur_Form.LexerRules;
 /// A lexer rule that matches the termination symbol used in Backus-Naur Form (BNF) notation.
 /// The termination symbol is used to denote the end of a production rule (e.g., &lt;symbol&gt; ::= A | B;).
 /// </summary>
-internal class TerminationRule : ExactMatchRule<Token>
+internal class TerminationRule : MatchExactSequenceRule<Token>
 {
-    /// <summary>
-    /// The token produced when the termination symbol is matched.
-    /// </summary>
-    private static readonly Token TerminationToken = new(TokenType.DefinitionSymbol, TerminationSymbol.AsMemory());
-
     /// <summary>
     /// The termination symbol used in BNF notation, which is ";".
     /// </summary>
     private const string TerminationSymbol = ";";
+
+    /// <summary>
+    /// The token produced when the termination symbol is matched.
+    /// </summary>
+    private static readonly Token TerminationToken = new(TokenType.TerminationSymbol, TerminationSymbol.AsMemory());
 
     /// <summary>
     /// Initializes a new instance of the TerminationRule class.

@@ -1,30 +1,25 @@
 ﻿
+using Lexer.DefaultRules;
+
 namespace Backus_Naur_Form.LexerRules;
 
 /// <summary>
 /// A lexer rule that matches single-line comments in Backus-Naur Form (BNF) notation.
 /// Single-line comments start with "//" and continue until the end of the line.
 /// </summary>
-internal class SingleLineComment : DelimitedSequenceWithSequencesRule
+internal class SingleLineComment : StringDelimitedSequenceRule<Token>
 {
-    /// <summary>
-    /// The start sequence for single-line comments, which is "//".
-    /// </summary>
-    private const string Start = "//";
+    private const string StartString = "//";
 
-    /// <summary>
-    /// The end character for single-line comments, which is the newline character '\n'.
-    /// </summary>
-    private const char End = '\n';
+    private static readonly string[] EndStrings = ["\r\n", "\n"];
 
-    /// <summary>
-    /// An array of characters that are not allowed within single-line comments.
-    /// Currently, it includes the newline character and double quotes.
-    /// </summary>
-    private static readonly char[] InvalidChars = ['"', '\n'];
+#if DEBUG
+    public SingleLineComment() : base(StartString.AsMemory(), EndStrings, countEndLength: false, returnTokenOnMatch: true) { }
 
-    /// <summary>
-    /// Initializes a new instance of the SingleLineComment class.
-    /// </summary>
-    public SingleLineComment() : base(Start.AsMemory(), End, InvalidChars, TokenType.SingleLineComment) { }
+    protected override Token GenerateToken(ReadOnlyMemory<char> matchedInput) { return new Token(TokenType.SingleLineComment, matchedInput); }
+#else
+    public SingleLineComment() : base(StartString.AsMemory(), EndStrings, countEndLength: false, returnTokenOnMatch: false) { }
+
+    protected override Token GenerateToken(ReadOnlyMemory<char> matchedInput) { return null!; }
+#endif
 }

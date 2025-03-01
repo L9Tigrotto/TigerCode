@@ -6,10 +6,9 @@ namespace Backus_Naur_Form;
 /// </summary>
 public enum TokenType
 {
-    /// <summary>
-    /// Represents the end of the file.
-    /// </summary>
-    EndOfFile,          // <EOF>
+    NewLine,            // \n\r
+
+    WhiteSpace,         // ' ', '\t'
 
     /// <summary>
     /// Represents a non-terminal symbol, enclosed in angle brackets (e.g., &lt;name&gt;).
@@ -45,28 +44,22 @@ public enum TokenType
 /// <summary>
 /// Represents a token in Backus-Naur Form (BNF) notation, containing a token type and an associated value.
 /// </summary>
-public class Token
+/// <remarks>
+/// Initializes a new instance of the Token class with a specified token type and value.
+/// </remarks>
+/// <param name="tokenType">The type of the token.</param>
+/// <param name="value">The value associated with the token.</param>
+public class Token(TokenType tokenType, ReadOnlyMemory<char> value)
 {
     /// <summary>
     /// Gets the type of the token.
     /// </summary>
-    public TokenType TokenType { get; init; }
+    public TokenType TokenType { get; init; } = tokenType;
 
     /// <summary>
     /// Gets the value associated with the token.
     /// </summary>
-    public ReadOnlyMemory<char> Value { get; init; }
-
-    /// <summary>
-    /// Initializes a new instance of the Token class with a specified token type and value.
-    /// </summary>
-    /// <param name="tokenType">The type of the token.</param>
-    /// <param name="value">The value associated with the token.</param>
-    public Token(TokenType tokenType, ReadOnlyMemory<char> value)
-    {
-        TokenType = tokenType;
-        Value = value;
-    }
+    public ReadOnlyMemory<char> Value { get; init; } = value;
 
     /// <summary>
     /// Initializes a new instance of the Token class with a specified token type and an empty value.

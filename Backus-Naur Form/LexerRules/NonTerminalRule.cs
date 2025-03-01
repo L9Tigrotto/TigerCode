@@ -1,5 +1,5 @@
 ﻿
-using System.Diagnostics.CodeAnalysis;
+using Lexer.DefaultRules;
 
 namespace Backus_Naur_Form.LexerRules;
 
@@ -7,18 +7,17 @@ namespace Backus_Naur_Form.LexerRules;
 /// A lexer rule that matches non-terminal symbols in Backus-Naur Form (BNF) notation.
 /// Non-terminal symbols are enclosed in angle brackets (e.g., &lt;symbol&gt;).
 /// </summary>
-[SuppressMessage("ReSharper", "InvalidXmlDocComment")]
-internal class NonTerminalRule : DelimitedSequenceRule
+internal class NonTerminalRule : CharDelimitedSequenceRule<Token>
 {
     /// <summary>
     /// The start character for non-terminal symbols, which is '<'.
     /// </summary>
-    private const char Start = '<';
+    private const char StartChar = '<';
 
     /// <summary>
     /// The end character for non-terminal symbols, which is '>'.
     /// </summary>
-    private const char End = '>';
+    private const char EndChar = '>';
 
     /// <summary>
     /// An array of characters that are not allowed within non-terminal symbols.
@@ -32,5 +31,7 @@ internal class NonTerminalRule : DelimitedSequenceRule
     /// <summary>
     /// Initializes a new instance of the NonTerminalRule class.
     /// </summary>
-    public NonTerminalRule() : base(Start, End, InvalidChars, TokenType.NonTerminal) { }
+    public NonTerminalRule() : base(StartChar, EndChar, InvalidChars) { }
+
+    protected override Token GenerateToken(ReadOnlyMemory<char> matchedInput) { return new Token(TokenType.NonTerminal, matchedInput); }
 }
