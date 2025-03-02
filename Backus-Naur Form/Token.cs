@@ -6,8 +6,14 @@ namespace Backus_Naur_Form;
 /// </summary>
 public enum TokenType
 {
+    /// <summary>
+    /// Represents a new line character, including '\n' and '\r'.
+    /// </summary>
     NewLine,            // \n\r
 
+    /// <summary>
+    /// Represents a white space character, including space (' ') and tab ('\t').
+    /// </summary>
     WhiteSpace,         // ' ', '\t'
 
     /// <summary>

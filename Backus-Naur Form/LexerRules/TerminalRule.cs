@@ -1,6 +1,5 @@
 ﻿
-using System.Diagnostics.CodeAnalysis;
-using Lexer.DefaultRules;
+using Lexer.BasicRules;
 
 namespace Backus_Naur_Form.LexerRules;
 
@@ -31,6 +30,11 @@ internal class TerminalRule : CharDelimitedSequenceRule<Token>
     /// </summary>
     public TerminalRule() : base(StartChar, EndChar, InvalidChars) { }
 
+    /// <summary>
+    /// Generates a token from the matched input text.
+    /// </summary>
+    /// <param name="matchedInput">The matched input text.</param>
+    /// <returns>A token of type TokenType.Terminal with the matched input text as its value.</returns>
     protected override Token GenerateToken(ReadOnlyMemory<char> matchedInput) { return new Token(TokenType.Terminal, matchedInput); }
 }
 

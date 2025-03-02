@@ -3,12 +3,11 @@ using Backus_Naur_Form;
 using Backus_Naur_Form.LexerRules;
 using Lexer;
 
-
 // Define the file to be processed by the lexer
 FileInfo fileInfo = new("BNF.lexer");
 
 // Create a list of rules for the BNF lexer, including rules for non-terminal symbols, terminal symbols, comments, and special symbols
-List<LexerRule<Token>> rules = LexerRuleManager.CreateRules(out NewLineRule newLineRule);
+LexerRule<Token>[] rules = LexerRuleManager.CreateRules(out NewLineRule newLineRule);
 
 // Initialize the lexer with the file, skip rule, end-of-file rule, and the list of rules
 Lexer<Token> lexer = Lexer<Token>.From(fileInfo, rules);
@@ -38,4 +37,4 @@ do
         Console.WriteLine($"Error at line {newLineRule.CurrentLine}\n{e}");
         return;
     }
-} while (true); // Continue processing until the end-of-file token is encountered
+} while (true);

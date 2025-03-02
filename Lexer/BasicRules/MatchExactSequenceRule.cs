@@ -1,5 +1,5 @@
 ﻿
-namespace Lexer.DefaultRules;
+namespace Lexer.BasicRules;
 
 /// <summary>
 /// A lexer rule that matches an exact sequence of characters and produces a specified token.
@@ -17,6 +17,13 @@ public class MatchExactSequenceRule<TToken> : LexerRule<TToken>
     /// </summary>
     protected TToken Token { get; init; }
 
+    /// <summary>
+    /// Initializes a new instance of the MatchExactSequenceRule class with the specified sequence and token.
+    /// </summary>
+    /// <param name="sequence">The sequence of characters to match.</param>
+    /// <param name="token">The token to produce when the sequence is found.</param>
+    /// <param name="returnTokenOnMatch">True to return the token on match; false to skip the token.</param>
+    /// <exception cref="ArgumentException">Thrown if the sequence is empty.</exception>
     public MatchExactSequenceRule(ReadOnlyMemory<char> sequence, TToken token, bool returnTokenOnMatch = true) : base(returnTokenOnMatch)
     {
         if (sequence.IsEmpty) { throw new ArgumentException("Sequence is empty."); }
