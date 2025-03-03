@@ -45,6 +45,10 @@ public enum TokenType
     /// Represents a single-line comment, starting with "//" and continuing until the end of the line.
     /// </summary>
     SingleLineComment,  // //{comment}
+
+    MultiLineComment,   // /*{comment}*/
+
+    Attribute           // [attribute name]
 }
 
 /// <summary>

@@ -1,6 +1,6 @@
 ﻿
 using Backus_Naur_Form;
-using Backus_Naur_Form.LexerRules;
+using Backus_Naur_Form.Rules;
 using Lexer;
 
 // Define the file to be processed by the lexer

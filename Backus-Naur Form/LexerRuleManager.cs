@@ -1,5 +1,5 @@
 ﻿
-using Backus_Naur_Form.LexerRules;
+using Backus_Naur_Form.Rules;
 using Lexer;
 
 namespace Backus_Naur_Form;
@@ -17,9 +17,11 @@ internal static class LexerRuleManager
     public static LexerRule<Token>[] CreateRules(out NewLineRule newLineRule)
     {
         // Initialize rules for different BNF constructs
-        newLineRule = new NewLineRule();
+        newLineRule = new();
         WhiteSpaceRule whiteSpaceRule = new();
-        SingleLineComment singleLineComment = new();
+        SingleLineCommentRule singleLineCommentRule = new();
+        MultiLineCommentRule multiLineCommentRule = new();
+        AttributeRule attributeRule = new();
         NonTerminalRule nonTerminalRule = new();
         TerminalRule terminalRule = new();
         SeparationRule separationRule = new();
@@ -27,21 +29,24 @@ internal static class LexerRuleManager
         TerminationRule terminationRule = new();
 
         // Define subsequent rules for each rule to optimize matching
-        newLineRule.SubsequentRules = [newLineRule, whiteSpaceRule, singleLineComment, nonTerminalRule];
-        whiteSpaceRule.SubsequentRules = [whiteSpaceRule, separationRule, definitionRule, terminalRule, nonTerminalRule];
-        singleLineComment.SubsequentRules = [newLineRule];
-        nonTerminalRule.SubsequentRules = [whiteSpaceRule, definitionRule, nonTerminalRule, terminationRule];
-        terminalRule.SubsequentRules = [whiteSpaceRule, separationRule, nonTerminalRule];
-        separationRule.SubsequentRules = [whiteSpaceRule, terminalRule, nonTerminalRule];
-        definitionRule.SubsequentRules = [whiteSpaceRule, terminalRule, nonTerminalRule];
-        terminationRule.SubsequentRules = [newLineRule, whiteSpaceRule, nonTerminalRule];
+        newLineRule.SubsequentRules = [newLineRule, attributeRule, whiteSpaceRule, nonTerminalRule, singleLineCommentRule, multiLineCommentRule];
+        whiteSpaceRule.SubsequentRules = [whiteSpaceRule, attributeRule, separationRule, definitionRule, terminalRule, singleLineCommentRule, multiLineCommentRule];
+        singleLineCommentRule.SubsequentRules = [newLineRule];
+        multiLineCommentRule.SubsequentRules = [newLineRule];
+        attributeRule.SubsequentRules = [newLineRule, nonTerminalRule];
+        nonTerminalRule.SubsequentRules = [whiteSpaceRule, terminationRule];
+        terminalRule.SubsequentRules = [whiteSpaceRule];
+        separationRule.SubsequentRules = [whiteSpaceRule];
+        definitionRule.SubsequentRules = [whiteSpaceRule];
+        terminationRule.SubsequentRules = [newLineRule];
 
         return
         [
             // Rules that do not return a token on match
             newLineRule,                // Matches new line characters (e.g., \n)
             new WhiteSpaceRule(),       // Matches whitespace characters (e.g., ' ', '\t')
-            new SingleLineComment(),    // Matches single-line comments (e.g., // text)
+            new SingleLineCommentRule(),    // Matches single-line comments (e.g., // text)
+            new MultiLineCommentRule(),     // Matches multi-line comments (e.g., /* text */)
 
             // Rules that return a token on match
             new TerminalRule(),         // Matches terminal symbols (e.g., "value")

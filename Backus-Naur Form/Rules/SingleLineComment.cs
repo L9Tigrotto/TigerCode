@@ -7,7 +7,7 @@ namespace Backus_Naur_Form.Rules;
 /// A lexer rule that matches single-line comments in Backus-Naur Form (BNF) notation.
 /// Single-line comments start with "//" and continue until the end of the line.
 /// </summary>
-internal class SingleLineComment : StringDelimitedSequenceRule<Token>
+internal class SingleLineCommentRule : StringDelimitedSequenceRule<Token>
 {
     /// <summary>
     /// The starting sequence for single-line comments, which is "//".
@@ -26,9 +26,9 @@ internal class SingleLineComment : StringDelimitedSequenceRule<Token>
     /// In DEBUG mode, the rule returns the token on match. In non-DEBUG mode, the rule skips the token.
     /// </remarks>
 #if DEBUG
-    public SingleLineComment() : base(StartString.AsMemory(), EndStrings, countEndLength: false, returnTokenOnMatch: true) { }
+    public SingleLineCommentRule() : base(StartString.AsMemory(), EndStrings, countEndLength: false, returnTokenOnMatch: true) { }
 #else
-    public SingleLineComment() : base(StartString.AsMemory(), EndStrings, countEndLength: false, returnTokenOnMatch: false) { }
+    public SingleLineCommentRule() : base(StartString.AsMemory(), EndStrings, countEndLength: false, returnTokenOnMatch: false) { }
 #endif
 
     /// <summary>
