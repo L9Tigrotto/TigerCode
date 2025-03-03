@@ -37,16 +37,6 @@ internal class NewLineRule : MatchExactSequencesRule<Token>
         return result;
     }
 
-    /// <summary>
-    /// Initializes a new instance of the NewLineRule class.
-    /// </summary>
-    /// <remarks>
-    /// In DEBUG mode, the rule returns the token on match. In non-DEBUG mode, the rule skips the token.
-    /// </remarks>
-#if DEBUG
-    public NewLineRule() : base(NewLineSequences.AsMemory(), NewLineToken, returnTokenOnMatch: true) { }
-#else
     public NewLineRule() : base(NewLineSequences.AsMemory(), NewLineToken, returnTokenOnMatch: false) { }
-#endif
 }
 

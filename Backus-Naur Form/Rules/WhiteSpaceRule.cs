@@ -18,16 +18,5 @@ internal class WhiteSpaceRule : MatchExactSequencesRule<Token>
     /// </summary>
     private static readonly Token WhiteSpaceToken = new(TokenType.WhiteSpace, WhiteSpaceSequences[0].AsMemory());
 
-    /// <summary>
-    /// Initializes a new instance of the WhiteSpaceRule class.
-    /// </summary>
-    /// <remarks>
-    /// In DEBUG mode, the rule returns the token on match. In non-DEBUG mode, the rule skips the token.
-    /// </remarks>
-#if DEBUG
-    public WhiteSpaceRule() : base(WhiteSpaceSequences.AsMemory(), WhiteSpaceToken, returnTokenOnMatch: true) { }
-
-#else
     public WhiteSpaceRule() : base(WhiteSpaceSequences.AsMemory(), WhiteSpaceToken, returnTokenOnMatch: false) { }
-#endif
 }
