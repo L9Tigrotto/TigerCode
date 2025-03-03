@@ -43,17 +43,18 @@ internal static class LexerRuleManager
         return
         [
             // Rules that do not return a token on match
-            newLineRule,                // Matches new line characters (e.g., \n)
-            new WhiteSpaceRule(),       // Matches whitespace characters (e.g., ' ', '\t')
+            newLineRule,                    // Matches new line characters (e.g., \n)
+            new WhiteSpaceRule(),           // Matches whitespace characters (e.g., ' ', '\t')
             new SingleLineCommentRule(),    // Matches single-line comments (e.g., // text)
             new MultiLineCommentRule(),     // Matches multi-line comments (e.g., /* text */)
 
             // Rules that return a token on match
-            new TerminalRule(),         // Matches terminal symbols (e.g., "value")
-            new SeparationRule(),       // Matches the separation symbol (e.g., |)
-            new NonTerminalRule(),      // Matches non-terminal symbols (e.g., <name>)
-            new DefinitionRule(),       // Matches the definition symbol (e.g., ::=)
-            new TerminationRule(),      // Matches the termination symbol (e.g., ;)
+            new AttributeRule(),            // Matches attribute symbols (e.g., [attribute name])
+            new TerminalRule(),             // Matches terminal symbols (e.g., "value")
+            new SeparationRule(),           // Matches the separation symbol (e.g., |)
+            new NonTerminalRule(),          // Matches non-terminal symbols (e.g., <name>)
+            new DefinitionRule(),           // Matches the definition symbol (e.g., ::=)
+            new TerminationRule(),          // Matches the termination symbol (e.g., ;)
         ];
     }
 }
