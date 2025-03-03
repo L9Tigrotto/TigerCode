@@ -1,4 +1,5 @@
-﻿using Backus_Naur_Form.Rules.Basics;
+﻿
+using Backus_Naur_Form.Rules.Basics;
 
 namespace Backus_Naur_Form.Rules;
 
@@ -22,7 +23,7 @@ internal class TerminalRule : CharDelimitedSequenceRule<Token>
     /// An array of characters that are not allowed within terminal symbols.
     /// Currently, it includes the double quote and newline characters.
     /// </summary>
-    private static readonly char[] InvalidChars = ['"', '\n'];
+    private static readonly char[] InvalidChars = ['"'];
 
     /// <summary>
     /// Initializes a new instance of the TerminalRule class.

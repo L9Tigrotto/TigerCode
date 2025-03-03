@@ -1,4 +1,5 @@
-﻿using Backus_Naur_Form.Rules.Basics;
+﻿
+using Backus_Naur_Form.Rules.Basics;
 using Lexer;
 
 namespace Backus_Naur_Form.Rules;

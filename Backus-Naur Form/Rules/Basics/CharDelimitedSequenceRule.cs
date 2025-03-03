@@ -1,4 +1,6 @@
-﻿using System.Buffers;
+﻿
+using System.Buffers;
+using System.Security.Principal;
 using Lexer;
 
 namespace Backus_Naur_Form.Rules.Basics;
@@ -66,24 +68,36 @@ public abstract class CharDelimitedSequenceRule<TToken> : LexerRule<TToken>
         if (inputSpan[0] != Start) { return new(isMatchFound: false, matchedTextLength: 0, isEndOfFile: false, generatedToken: default!); }
 
         // Move past the start character
-        inputSpan = inputSpan[1..];
-        int index = inputSpan.IndexOfAny(NotAllowedChars);
+        ReadOnlySpan<char> tempSpan = inputSpan[1..];
+        int index = tempSpan.IndexOfAny(NotAllowedChars);
+        int matchedLength = 0;
+
+        while (index > 0 && tempSpan[index - 1] == '\\')
+        {
+            if (index > 1 && tempSpan[index - 2] == '\\') { break; }
+            matchedLength += index + 1;
+            tempSpan = tempSpan[(index + 1)..];
+            index = tempSpan.IndexOfAny(NotAllowedChars);
+        }
 
         // Ensure the end character is found
         if (index is -1) { throw new InvalidOperationException($"Sequence end char '{End}' not found."); }
 
-        char invalidChar = inputSpan[index];
+        matchedLength += index;
+        
+        char invalidChar = inputSpan[matchedLength + 1];
         if (invalidChar != End)
         {
+            ReadOnlySpan<char> matchedSpan = inputSpan.Slice(start: 1, length: matchedLength);
             throw new InvalidOperationException(
-                $"Invalid sequence: {inputSpan[..index]}({invalidChar})?.");
+                $"Invalid sequence: {matchedSpan}({invalidChar})?.");
         }
 
         // Generate the token from the matched input text
-        TToken token = GenerateToken(input.Slice(start: 1, length: index));
+        TToken token = GenerateToken(input.Slice(start: 1, length: matchedLength));
 
         // Calculate the total length of the matched text
-        int length = index + 2; // Include start and end characters
+        int length = matchedLength + 2; // Include start and end characters
 
         return new(
             isMatchFound: true,

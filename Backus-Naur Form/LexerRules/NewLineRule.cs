@@ -1,6 +1,6 @@
 ﻿
+using Backus_Naur_Form.Rules.Basics;
 using Lexer;
-using Lexer.BasicRules;
 
 namespace Backus_Naur_Form.LexerRules;
 
