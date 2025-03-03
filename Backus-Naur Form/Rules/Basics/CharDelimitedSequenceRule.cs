@@ -9,7 +9,7 @@ namespace Backus_Naur_Form.Rules.Basics;
 /// An abstract base class for lexer rules that match a sequence of characters delimited by specific start and end characters.
 /// </summary>
 /// <typeparam name="TToken">The type of token produced by the lexer rule.</typeparam>
-public abstract class CharDelimitedSequenceRule<TToken> : LexerRule<TToken>
+public abstract class CharDelimitedSequenceRule<TToken> : Rule<TToken>
 {
     /// <summary>
     /// Gets the starting character that signifies the beginning of the match.

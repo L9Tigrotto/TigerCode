@@ -15,13 +15,13 @@ public class Lexer<TToken>
     /// <summary>
     /// Gets all the rules used by the lexer to match tokens in the input text.
     /// </summary>
-    protected LexerRule<TToken>[] AllRules { get; init; }
+    protected Rule<TToken>[] AllRules { get; init; }
 
     /// <summary>
     /// Gets or sets the rules that are expected to follow the last matched rule.
     /// These rules are prioritized for matching the next token.
     /// </summary>
-    protected LexerRule<TToken>[] ExpectedFollowUpRules { get; set; }
+    protected Rule<TToken>[] ExpectedFollowUpRules { get; set; }
 
     /// <summary>
     /// Gets or sets the current position in the input text.
@@ -33,7 +33,7 @@ public class Lexer<TToken>
     /// </summary>
     /// <param name="input">The input text to be processed.</param>
     /// <param name="allRules">The list of rules used to match tokens in the input text.</param>
-    public Lexer(ReadOnlyMemory<char> input, LexerRule<TToken>[] allRules)
+    public Lexer(ReadOnlyMemory<char> input, Rule<TToken>[] allRules)
     {
         Input = input;
         AllRules = allRules;
@@ -47,7 +47,7 @@ public class Lexer<TToken>
     /// <param name="fileInfo">The file to read the input text from.</param>
     /// <param name="rules">The list of rules used to match tokens in the input text.</param>
     /// <returns>A new Lexer instance initialized with the file's content.</returns>
-    public static Lexer<TToken> From(FileInfo fileInfo, LexerRule<TToken>[] rules)
+    public static Lexer<TToken> From(FileInfo fileInfo, Rule<TToken>[] rules)
     {
         string content = File.ReadAllText(fileInfo.FullName);
         return new(content.AsMemory(), rules);
@@ -59,7 +59,7 @@ public class Lexer<TToken>
     /// <param name="input">The input text being processed.</param>
     /// <param name="result">The result of the match operation.</param>
     /// <param name="rule">The rule that matched the input text.</param>
-    private void UpdateStateForMatch(ref ReadOnlyMemory<char> input,  MatchResult<TToken> result, LexerRule<TToken> rule)
+    private void UpdateStateForMatch(ref ReadOnlyMemory<char> input,  MatchResult<TToken> result, Rule<TToken> rule)
     {
         input = input[result.MatchedTextLength..];
         ExpectedFollowUpRules = rule.SubsequentRules;
@@ -77,7 +77,7 @@ public class Lexer<TToken>
     {
         for (int i = 0; i < ExpectedFollowUpRules.Length; i++)
         {
-            LexerRule<TToken> rule = ExpectedFollowUpRules[i];
+            Rule<TToken> rule = ExpectedFollowUpRules[i];
             MatchResult<TToken> result = rule.Match(input);
 
             // Check if the end of the file is reached
@@ -123,7 +123,7 @@ public class Lexer<TToken>
     {
         for (int i = 0; i < AllRules.Length; i++)
         {
-            LexerRule<TToken> rule = AllRules[i];
+            Rule<TToken> rule = AllRules[i];
             MatchResult<TToken> result = rule.Match(input);
 
             // Check if the end of the file is reached

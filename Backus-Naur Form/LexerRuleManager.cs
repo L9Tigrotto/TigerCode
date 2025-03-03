@@ -14,7 +14,7 @@ internal static class LexerRuleManager
     /// </summary>
     /// <param name="newLineRule">The rule for matching new line characters.</param>
     /// <returns>An array of LexerRule instances for various BNF constructs.</returns>
-    public static LexerRule<Token>[] CreateRules(out NewLineRule newLineRule)
+    public static Rule<Token>[] CreateRules(out NewLineRule newLineRule)
     {
         // Initialize rules for different BNF constructs
         newLineRule = new();

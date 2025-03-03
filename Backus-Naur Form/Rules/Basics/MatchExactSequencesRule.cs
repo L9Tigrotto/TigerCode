@@ -7,7 +7,7 @@ namespace Backus_Naur_Form.Rules.Basics;
 /// A lexer rule that matches any of the specified exact sequences of characters and produces a single token.
 /// </summary>
 /// <typeparam name="TToken">The type of token produced by the lexer rule.</typeparam>
-public class MatchExactSequencesRule<TToken> : LexerRule<TToken>
+public class MatchExactSequencesRule<TToken> : Rule<TToken>
 {
     /// <summary>
     /// Gets the sequences of characters to match in the input text.

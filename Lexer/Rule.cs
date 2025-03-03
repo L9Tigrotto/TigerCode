@@ -50,7 +50,7 @@ public readonly struct MatchResult<TToken>
 /// Abstract base class for lexer rules.
 /// </summary>
 /// <typeparam name="TToken">The type of token produced by the lexer rule.</typeparam>
-public abstract class LexerRule<TToken>
+public abstract class Rule<TToken>
 {
     /// <summary>
     /// Gets or sets a value indicating whether the lexer should return the token if a match is found.
@@ -62,14 +62,14 @@ public abstract class LexerRule<TToken>
     /// Gets or sets a collection of rules that are likely to follow the current rule.
     /// If none of these rules match, the lexer will cycle through all stored rules.
     /// </summary>
-    public LexerRule<TToken>[] SubsequentRules { get; set; }
+    public Rule<TToken>[] SubsequentRules { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the LexerRule class with the specified return behavior.
     /// </summary>
     /// <param name="returnTokenOnMatch">True to return the token on match; false to skip the token.</param>
     /// <param name="subsequentRules">A collection of rules that are likely to follow the current rule.</param>
-    protected LexerRule(bool returnTokenOnMatch, LexerRule<TToken>[] subsequentRules)
+    protected Rule(bool returnTokenOnMatch, Rule<TToken>[] subsequentRules)
     {
         ReturnTokenOnMatch = returnTokenOnMatch;
         SubsequentRules = subsequentRules;
@@ -79,7 +79,7 @@ public abstract class LexerRule<TToken>
     /// Initializes a new instance of the LexerRule class with the specified return behavior.
     /// </summary>
     /// <param name="returnTokenOnMatch">True to return the token on match; false to skip the token.</param>
-    protected LexerRule(bool returnTokenOnMatch) : this(returnTokenOnMatch, subsequentRules: []) { }
+    protected Rule(bool returnTokenOnMatch) : this(returnTokenOnMatch, subsequentRules: []) { }
 
     /// <summary>
     /// Attempts to match the input text and produce a token.

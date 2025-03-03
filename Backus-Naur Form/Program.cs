@@ -7,7 +7,7 @@ using Lexer;
 FileInfo fileInfo = new("BNF.lexer");
 
 // Create a list of rules for the BNF lexer, including rules for non-terminal symbols, terminal symbols, comments, and special symbols
-LexerRule<Token>[] rules = LexerRuleManager.CreateRules(out NewLineRule newLineRule);
+Rule<Token>[] rules = LexerRuleManager.CreateRules(out NewLineRule newLineRule);
 
 // Initialize the lexer with the file, skip rule, end-of-file rule, and the list of rules
 Lexer<Token> lexer = Lexer<Token>.From(fileInfo, rules);
