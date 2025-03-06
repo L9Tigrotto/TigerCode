@@ -36,7 +36,7 @@ The aim of TigerCode is twofold:
 - **🟡 Error Handling**: Improve error reporting across lexical, syntactic, and semantic analysis to make the compiler more user-friendly.
 - **🟡 NuGet Package**: Publish the Lexer and Parser (and other compiler components) as a NuGet package for simple installation and use in projects.
 - **🟡 Standard Library for TigerCode**: Implement a set of basic functions (I/O, math, memory management) for the TigerCode language to enable easier development.
-- **🟡 Self-contained Compilation**: Implement parts 3, 4, 5, and 6 of the [CompilerOverview](https://github.com/L9Tigrotto/TigerCode/blob/doc/redme_and_compiler_overview/CompilerOverview.md) (Intermediate Code Generation, Optimization, Code Generation, and Platform-Specific Code Generation) to **eliminate the need to rely on an external C compiler**. This will enable TigerCodeCompiler to become a fully self-contained compiler capable of compiling TigerCode directly to machine code or intermediate representations like bytecode.
+- **🟡 Self-contained Compilation**: Implement parts 3, 4, 5, and 6 of the [CompilerOverview](https://github.com/L9Tigrotto/TigerCode/blob/master/CompilerOverview.md) (Intermediate Code Generation, Optimization, Code Generation, and Platform-Specific Code Generation) to **eliminate the need to rely on an external C compiler**. This will enable TigerCodeCompiler to become a fully self-contained compiler capable of compiling TigerCode directly to machine code or intermediate representations like bytecode.
 
 ## Getting Started
 
