@@ -1,184 +1,121 @@
 ﻿
+using System.Buffers;
+using System.Runtime.InteropServices;
+
 namespace Lexer;
 
 /// <summary>
-/// A generic lexer class that processes input text using specified rules.
+/// Defines a token that can be reset to its initial state.
 /// </summary>
-/// <typeparam name="TToken">The type of token produced by the lexer.</typeparam>
-public class Lexer<TToken>
+public interface IToken
 {
     /// <summary>
-    /// Gets or sets the input text to be processed.
+    /// Resets the token to its initial state.
+    /// </summary>
+    public void Reset();
+}
+
+/// <summary>
+/// Represents a generic lexer for tokenizing input based on a set of patterns.
+/// </summary>
+/// <typeparam name="T">The type of token to be produced, which must implement IToken.</typeparam>
+public class Lexer<T> where T : IToken
+{
+    /// <summary>
+    /// Gets or sets the input to be tokenized.
     /// </summary>
     protected ReadOnlyMemory<char> Input { get; set; }
 
     /// <summary>
-    /// Gets all the rules used by the lexer to match tokens in the input text.
+    /// Gets or sets the current token being processed.
     /// </summary>
-    protected Rule<TToken>[] AllRules { get; init; }
+    protected T Token { get; set; }
 
     /// <summary>
-    /// Gets or sets the rules that are expected to follow the last matched rule.
-    /// These rules are prioritized for matching the next token.
+    /// Gets or sets the activation symbols used to identify potential matches.
     /// </summary>
-    protected Rule<TToken>[] ExpectedFollowUpRules { get; set; }
+    protected SearchValues<char> ActivationSymbols { get; set; }
 
     /// <summary>
-    /// Gets or sets the current position in the input text.
+    /// Gets or sets a dictionary mapping activation symbols to their corresponding patterns.
     /// </summary>
-    protected int Cursor { get; set; } = 0;
+    protected Dictionary<char, LinkedList<IPattern<T>>> PossibleMatches { get; set; }
 
     /// <summary>
-    /// Initializes a new instance of the Lexer class with the specified input text and rules.
+    /// Initializes a new instance of the Lexer class with the specified input, patterns, and token.
     /// </summary>
-    /// <param name="input">The input text to be processed.</param>
-    /// <param name="allRules">The list of rules used to match tokens in the input text.</param>
-    public Lexer(ReadOnlyMemory<char> input, Rule<TToken>[] allRules)
+    /// <param name="input">The input to be tokenized.</param>
+    /// <param name="patterns">The patterns to apply during tokenization.</param>
+    /// <param name="token">The initial token.</param>
+    public Lexer(ReadOnlyMemory<char> input, IPattern<T>[] patterns, T token)
     {
         Input = input;
-        AllRules = allRules;
-        ExpectedFollowUpRules = [];
-        Cursor = 0;
-    }
+        Token = token;
 
-    /// <summary>
-    /// Creates a new Lexer instance from a file.
-    /// </summary>
-    /// <param name="fileInfo">The file to read the input text from.</param>
-    /// <param name="rules">The list of rules used to match tokens in the input text.</param>
-    /// <returns>A new Lexer instance initialized with the file's content.</returns>
-    public static Lexer<TToken> From(FileInfo fileInfo, Rule<TToken>[] rules)
-    {
-        string content = File.ReadAllText(fileInfo.FullName);
-        return new(content.AsMemory(), rules);
-    }
+        List<char> chars = [];
+        PossibleMatches = [];
 
-    /// <summary>
-    /// Updates the lexer's state after a successful match.
-    /// </summary>
-    /// <param name="input">The input text being processed.</param>
-    /// <param name="result">The result of the match operation.</param>
-    /// <param name="rule">The rule that matched the input text.</param>
-    private void UpdateStateForMatch(ref ReadOnlyMemory<char> input,  MatchResult<TToken> result, Rule<TToken> rule)
-    {
-        input = input[result.MatchedTextLength..];
-        ExpectedFollowUpRules = rule.SubsequentRules;
-        Cursor += result.MatchedTextLength;
-    }
-
-    /// <summary>
-    /// Iterates over the ExpectedFollowUpRules to find a match in the input text.
-    /// </summary>
-    /// <param name="input">The input text to match.</param>
-    /// <param name="isTokenGenerated">True if a token was generated; otherwise, false.</param>
-    /// <param name="isEndOfFile">True if the end of the file has been reached; otherwise, false.</param>
-    /// <returns>The generated token if a match is found; otherwise, default.</returns>
-    public TToken IterateFollowUpRules(ref ReadOnlyMemory<char> input, out bool isTokenGenerated, out bool isEndOfFile)
-    {
-        for (int i = 0; i < ExpectedFollowUpRules.Length; i++)
+        // Iterate over each pattern and collect activation symbols.
+        foreach (IPattern<T> rule in patterns)
         {
-            Rule<TToken> rule = ExpectedFollowUpRules[i];
-            MatchResult<TToken> result = rule.Match(input);
-
-            // Check if the end of the file is reached
-            if (result.IsEndOfFile)
+            foreach (char c in rule.ActivationSymbols)
             {
-                if (result.IsMatchFound) { UpdateStateForMatch(ref input, result, rule); }
-
-                isTokenGenerated = true;
-                isEndOfFile = true;
-                return result.GeneratedToken;
-            }
-
-            if (result.IsMatchFound)
-            {
-                UpdateStateForMatch(ref input, result, rule);
-
-                if (!rule.ReturnTokenOnMatch)
+                // If the activation symbol is not already in the dictionary, add it with a new list.
+                if (!PossibleMatches.TryGetValue(c, out LinkedList<IPattern<T>>? list))
                 {
-                    i = -1; // Restart the loop to re-evaluate the rules
-                    continue;
+                    list = [];
+                    PossibleMatches[c] = list;
                 }
 
-                isTokenGenerated = true;
-                isEndOfFile = false;
-                return result.GeneratedToken;
+                // Add the pattern to the list of patterns for this activation symbol.
+                list.AddLast(rule);
+                chars.Add(c);
             }
         }
 
-        isTokenGenerated = false;
-        isEndOfFile = false;
-        return default!;
+        // Create a SearchValues object from the collected activation symbols.
+        Span<char> charsSpan = CollectionsMarshal.AsSpan(chars);
+        ActivationSymbols = SearchValues.Create(charsSpan);
     }
 
     /// <summary>
-    /// Iterates over all rules to find a match in the input text.
+    /// Tokenizes the input and yields the resulting tokens.
     /// </summary>
-    /// <param name="input">The input text to match.</param>
-    /// <param name="isTokenGenerated">True if a token was generated; otherwise, false.</param>
-    /// <param name="reiterateFollowUpRules">True if the follow-up rules should be re-evaluated; otherwise, false.</param>
-    /// <param name="isEndOfFile">True if the end of the file has been reached; otherwise, false.</param>
-    /// <returns>The generated token if a match is found; otherwise, default.</returns>
-    public TToken IterateAllRules(ref ReadOnlyMemory<char> input, out bool isTokenGenerated, out bool reiterateFollowUpRules, out bool isEndOfFile)
+    /// <returns>An enumerable collection of tokens.</returns>
+    public IEnumerable<T> Tokenize()
     {
-        for (int i = 0; i < AllRules.Length; i++)
+        MatchDetails<T> matchDetails = new(Input, Token);
+
+        // Continue processing until the input is fully tokenized.
+        while (!matchDetails.Input.IsEmpty)
         {
-            Rule<TToken> rule = AllRules[i];
-            MatchResult<TToken> result = rule.Match(input);
+            matchDetails.Reset();
 
-            // Check if the end of the file is reached
-            if (result.IsEndOfFile)
+            ReadOnlySpan<char> inputSpan = matchDetails.Input.Span;
+            char activationSymbol = inputSpan[0];
+
+            // Check if there are any patterns for the current activation symbol.
+            if (!PossibleMatches.TryGetValue(activationSymbol, out LinkedList<IPattern<T>>? patterns))
             {
-                if (result.IsMatchFound) { UpdateStateForMatch(ref input, result, rule); }
-
-                isTokenGenerated = true;
-                reiterateFollowUpRules = false;
-                isEndOfFile = true;
-                return result.GeneratedToken;
+                throw new InvalidOperationException($"No rules defined for activation symbol '{activationSymbol}'. Please check your lexical rules.");
             }
 
-            if (result.IsMatchFound)
+            // Attempt to match the input against each pattern.
+            foreach (IPattern<T> pattern in patterns)
             {
-                UpdateStateForMatch(ref input, result, rule);
-
-                isTokenGenerated = true;
-                reiterateFollowUpRules = !rule.ReturnTokenOnMatch;
-                isEndOfFile = false;
-                return result.GeneratedToken;
+                pattern.ConfirmMatch(matchDetails);
+                if (matchDetails.IsMatch) { break; }
             }
-        }
 
-        isTokenGenerated = false;
-        reiterateFollowUpRules = false;
-        isEndOfFile = false;
-        return default!;
-    }
+            // If no pattern matches the input, throw an exception.
+            if (!matchDetails.IsMatch)
+            {
+                ReadOnlySpan<char> preview = matchDetails.Input.Span[..Math.Min(matchDetails.Input.Length, 20)];
+                throw new InvalidOperationException($"No rule matched the input '{preview}'... Please review the input and rules.");
+            }
 
-    /// <summary>
-    /// Retrieves the next token from the input text.
-    /// </summary>
-    /// <param name="isEndOfFile">True if the end of the file has been reached; otherwise, false.</param>
-    /// <returns>The next token produced by the lexer rules.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if no token is matched.</exception>
-    public TToken NextToken(out bool isEndOfFile)
-    {
-        ReadOnlyMemory<char> input = Input[Cursor..];
-
-        while (true)
-        {
-            // First, try to match using the ExpectedFollowUpRules
-            TToken token = IterateFollowUpRules(ref input, out bool isTokenGenerated, out isEndOfFile);
-            if (isTokenGenerated) { return token; }
-
-            // If no match, try to match using all rules
-            token = IterateAllRules(ref input, out isTokenGenerated, out bool reiterateFollowUpRules, out isEndOfFile);
-            if (reiterateFollowUpRules) { continue; }
-            if (isTokenGenerated) { return token; }
-
-            // Throw an exception if no token is matched
-            int textLength = Math.Min(input.Length, 20);
-            ReadOnlySpan<char> textToPrint = input.Span[..textLength];
-            throw new InvalidOperationException($"No rules matched the input text. '{textToPrint}'..");
+            // Yield the matched token if it is not marked to be skipped.
+            if (!matchDetails.Skip) { yield return matchDetails.Token; }
         }
     }
 }

@@ -1,40 +1,24 @@
 ﻿
 using Backus_Naur_Form;
-using Backus_Naur_Form.Rules;
+using Backus_Naur_Form.Patterns;
 using Lexer;
 
 // Define the file to be processed by the lexer
 FileInfo fileInfo = new("BNF.lexer");
 
-// Create a list of rules for the BNF lexer, including rules for non-terminal symbols, terminal symbols, comments, and special symbols
-Rule<Token>[] rules = LexerRuleManager.CreateRules(out NewLineRule newLineRule);
+string input = File.ReadAllText(fileInfo.FullName);
+IPattern<EBNFToken>[] rules = LexerManager.CreatePatterns(out WhiteSpace whiteSpace);
 
-// Initialize the lexer with the file, skip rule, end-of-file rule, and the list of rules
-Lexer<Token> lexer = Lexer<Token>.From(fileInfo, rules);
+Lexer<EBNFToken> lexer = new(input.AsMemory(), rules, token: new EBNFToken());
 
-do
+foreach (EBNFToken token in lexer.Tokenize())
 {
-    try
-    {
-        // Get the next token from the lexer
-        Token token = lexer.NextToken(out bool endOfFile);
+    Console.WriteLine(token);
+}
 
-        if (endOfFile)
-        {
-            Console.WriteLine("End of file.");
-            break;
-        }
-
-        // Print the token to the console
-        Console.WriteLine(token);
-
-        // Wait for a key press before continuing
-        //Console.ReadKey(intercept: true);
-    }
-    catch (Exception e)
-    {
-        // Handle any exceptions that occur during tokenization
-        Console.WriteLine($"Error at line {newLineRule.CurrentLine}\n{e}");
-        return;
-    }
-} while (true);
+/*
+ * TODO
+ * - create missing token type (optional, repetition, grouping)
+ * - create a function that given a .lexer file (written in EBNF),
+ *   it creates the patterns
+ */
