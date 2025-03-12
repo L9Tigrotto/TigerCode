@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parser", "Parser\Parser.csproj", "{F44498EC-06CD-40BD-97ED-085764C0F586}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TigerCode", "TigerCode\TigerCode.csproj", "{72B19F90-E867-44C4-8AAF-B2EF0458B34D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TigerCompiler", "TigerCode\TigerCompiler.csproj", "{72B19F90-E867-44C4-8AAF-B2EF0458B34D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backus-Naur Form", "Backus-Naur Form\Backus-Naur Form.csproj", "{AC122268-4DCB-4BC8-8405-1DDCFAD99FBA}"
 EndProject
