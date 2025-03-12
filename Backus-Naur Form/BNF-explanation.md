@@ -37,7 +37,6 @@ Extended BNF adds several additional notations to make definitions more concise:
 - **Optional elements**: Elements in square brackets `[...]` are optional
 - **Repetition**: Elements in curly braces `{...}` can appear zero or more times
 - **Grouping**: Parentheses `(...)` group elements together
-- **Literal text**: Often quoted to distinguish from syntax elements
 
 ## Example: BNF for a Simple Arithmetic Expression
 

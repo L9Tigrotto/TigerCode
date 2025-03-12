@@ -7,18 +7,27 @@ using Lexer;
 FileInfo fileInfo = new("BNF.lexer");
 
 string input = File.ReadAllText(fileInfo.FullName);
-IPattern<EBNFToken>[] rules = LexerManager.CreatePatterns(out WhiteSpace whiteSpace);
+IPattern<EBNFToken>[] rules = LexerManager.CreatePatterns(out WhiteSpacePattern whiteSpace);
 
 Lexer<EBNFToken> lexer = new(input.AsMemory(), rules, token: new EBNFToken());
 
-foreach (EBNFToken token in lexer.Tokenize())
+try
 {
-    Console.WriteLine(token);
+    foreach (EBNFToken token in lexer.Tokenize())
+    {
+        Console.WriteLine(token);
+    }
 }
+catch (Exception e)
+{
+    Console.WriteLine($"Error at line {whiteSpace.LineCount}.");
+    Console.WriteLine(e);
+    throw;
+}
+
 
 /*
  * TODO
- * - create missing token type (optional, repetition, grouping)
  * - create a function that given a .lexer file (written in EBNF),
  *   it creates the patterns
  */

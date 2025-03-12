@@ -4,7 +4,7 @@ using Lexer;
 
 namespace Backus_Naur_Form.Patterns;
 
-public class WhiteSpace : IPattern<EBNFToken>
+public class WhiteSpacePattern : IPattern<EBNFToken>
 {
     private static readonly char[] _activationSymbols = [' ', '\t', '\n', '\r'];
 

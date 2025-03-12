@@ -89,15 +89,13 @@ public class Lexer<T> where T : IToken
         // Continue processing until the input is fully tokenized.
         while (!matchDetails.Input.IsEmpty)
         {
-            matchDetails.Reset();
-
-            ReadOnlySpan<char> inputSpan = matchDetails.Input.Span;
-            char activationSymbol = inputSpan[0];
+            char activationSymbol = matchDetails.Input.Span[0];
 
             // Check if there are any patterns for the current activation symbol.
             if (!PossibleMatches.TryGetValue(activationSymbol, out LinkedList<IPattern<T>>? patterns))
             {
-                throw new InvalidOperationException($"No rules defined for activation symbol '{activationSymbol}'. Please check your lexical rules.");
+                ReadOnlySpan<char> preview = matchDetails.Input.Span[1..(Math.Min(matchDetails.Input.Length, 20) - 1)];
+                throw new InvalidOperationException($"No rules defined for activation symbol '[{activationSymbol}]{preview}'. Please check your lexical rules.");
             }
 
             // Attempt to match the input against each pattern.
@@ -116,6 +114,8 @@ public class Lexer<T> where T : IToken
 
             // Yield the matched token if it is not marked to be skipped.
             if (!matchDetails.Skip) { yield return matchDetails.Token; }
+
+            matchDetails.Reset();
         }
     }
 }

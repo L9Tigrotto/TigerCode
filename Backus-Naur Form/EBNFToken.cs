@@ -28,45 +28,27 @@ public enum EBNFTokenType
     /// </summary>
     MultiLineComment,
 
-    /// <summary>
-    /// Represents a non-terminal symbol, enclosed within angle brackets "<...>".
-    /// </summary>
-    NonTerminalSymbol,
+    NonTerminalElement,
 
-    /// <summary>
-    /// Represents a terminal symbol, enclosed within double quotes "...".
-    /// </summary>
-    TerminalSymbol,
+    TerminalElement,
 
-    /// <summary>
-    /// Represents the start of a definition, denoted by "::=".
-    /// </summary>
-    DefinitionStartSymbol,
+    DefinitionStart,
 
-    /// <summary>
-    /// Represents an alternative symbol, denoted by "|".
-    /// </summary>
-    AlternativeSymbol,
+    DefinitionEnd,
 
-    /// <summary>
-    /// Represents the end of a definition, denoted by ";".
-    /// </summary>
-    DefinitionEndSymbol,
+    Alternative,
 
-    /// <summary>
-    /// Represents an optional element, enclosed within square brackets "[...]".
-    /// </summary>
-    OptionalElement,
+    OptionalElementStart,
 
-    /// <summary>
-    /// Represents a repetition element, enclosed within curly braces "{...}".
-    /// </summary>
-    RepetitionElement,
+    OptionalElementEnd,
 
-    /// <summary>
-    /// Represents a grouping element, enclosed within parentheses "(...)".
-    /// </summary>
-    GroupingElement,
+    RepetitionElementStart,
+
+    RepetitionElementEnd,
+
+    GroupingElementStart,
+
+    GroupingElementEnd,
 }
 
 /// <summary>
@@ -123,6 +105,6 @@ public class EBNFToken : IToken
     {
         return Value.IsEmpty
             ? $"Type: {Type}"
-            : $"Type: {Type,-20} Value: '{Value.ToString()}'";
+            : $"Type: {Type,-20} Value: {Value}";
     }
 }

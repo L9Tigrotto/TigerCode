@@ -9,19 +9,16 @@ namespace Backus_Naur_Form;
 /// </summary>
 public static class LexerManager
 {
-    public static IPattern<EBNFToken>[] CreatePatterns(out WhiteSpace whiteSpace)
+    public static IPattern<EBNFToken>[] CreatePatterns(out WhiteSpacePattern whiteSpacePattern)
     {
-        whiteSpace = new();
+        whiteSpacePattern = new();
 
         return [
-            whiteSpace,
-            new SingleLineComment(),
-            new NonTerminal(),
-            new StartDefinitionSymbol(),
-            new Terminal(),
-            new EndDefinitionSymbol(),
-            new AlternativeSymbol(),
-            new MultiLineComment(),
+            whiteSpacePattern,
+            new ElementPattern(),
+            new CommentPattern(),
+            new AlternativePattern(),
+            new DefinitionPattern(),
         ];
     }
 }
