@@ -19,7 +19,7 @@ A compiler is a specialized software tool that transforms human-readable source 
    - **Deterministic Finite Automata (DFA)** - Each state has exactly one transition for each possible input
    - **Nondeterministic Finite Automata (NFA)** - States can have multiple transitions for the same input symbol
 
-1. 2. **Regular Expressions** - Powerful pattern matching notation that can be converted to finite automata
+2. **Regular Expressions** - Powerful pattern matching notation that can be converted to finite automata
    - Used to define the patterns for tokens like identifiers, numbers, and operators
    - Can be efficiently implemented as state machines
 
