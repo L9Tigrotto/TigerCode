@@ -1,6 +1,0 @@
-﻿
-namespace Parser;
-
-class Parser
-{
-}
